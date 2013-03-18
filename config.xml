@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<widget xmlns="http://www.w3.org/ns/widgets" id="http://code.zawiarr.com/newsblur">
+	<name>NewsBlur Notifier</name>
+	<description>Keep up to date on your NewsBlur feeds</description>
+  <author href="http://www.zawiarr.com" email="kleevah@zawiarr.com">Espen Helgedagsrud</author>
+  <icon src="icons/icon-64.png"/>
+	
+	<feature name="opera:share-cookies" required="true"/>
+	<access origin="http://newsblur.com" subdomains="true"/>
+  <access origin="https://newsblur.com" subdomains="true"/>
+
+	<preference name="updateTime" value="300000" />
+	<preference name="sshcheck" value="false" />
+	<preference name="devcheck" value="false" />
+</widget>
