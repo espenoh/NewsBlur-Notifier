@@ -134,7 +134,6 @@ function getTitleCount(){
   if (tab) {
     var tabcount = TITLE_REGEX.exec(tab.title);
     if (tabcount && tabcount[1]){
-      console.log("TITLEMATCH: " + tabcount[1] );
       unreadCount = tabcount[1];
       updateButton();
     }
