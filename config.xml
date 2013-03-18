@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<widget xmlns="http://www.w3.org/ns/widgets" id="http://code.zawiarr.com/newsblur">
+<widget xmlns="http://www.w3.org/ns/widgets" id="http://github.com/espenoh/NewsBlur-Notifier">
 	<name>NewsBlur Notifier</name>
 	<description>Keep up to date on your NewsBlur feeds</description>
-  <author href="http://www.zawiarr.com" email="kleevah@zawiarr.com">Espen Helgedagsrud</author>
+  <author href="https://github.com/espenoh/NewsBlur-Notifier" email="kleevah@zawiarr.com">Espen Helgedagsrud</author>
   <icon src="icons/icon-64.png"/>
 	
 	<feature name="opera:share-cookies" required="true"/>
