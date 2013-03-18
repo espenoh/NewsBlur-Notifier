@@ -14,32 +14,32 @@
   </header>
 
   <section>
-		<p>This extension was inspired by, and is also loosely based on, the <a href="http://addons.opera.com/extensions/details/google-reader-notifier/">Google Reader Notifier</a> by <a href="https://addons.opera.com/nb/search/?developer=al007">al007</a>, so much kudos to him for creating that.</p> 
-		<p>Oh, and thanks for using my extension, I hope you'll find it usefull.</p>
+    <p>This extension was inspired by, and is also loosely based on, the <a href="http://addons.opera.com/extensions/details/google-reader-notifier/">Google Reader Notifier</a> by <a href="https://addons.opera.com/nb/search/?developer=al007">al007</a>, so much kudos to him for creating that.</p> 
+    <p>Oh, and thanks for using my extension, I hope you'll find it usefull.</p>
 
     <h3>Timing options</h3>
     <fieldset>
-			Update every:
-			<select id="updateTime" name="updateTime" multiple="false">
-				<option value="60000">1 minute</option>
-				<option selected value="300000">5 minutes</option>
-				<option value="600000">10 minutes</option>
-				<option value="900000">15 minutes</option>
-				<option value="1800000">30 minutes</option>
-			</select>
+      Update every:
+      <select id="updateTime" name="updateTime" multiple="false">
+        <option value="60000">1 minute</option>
+        <option selected value="300000">5 minutes</option>
+        <option value="600000">10 minutes</option>
+        <option value="900000">15 minutes</option>
+        <option value="1800000">30 minutes</option>
+      </select>
     </fieldset>
 
     <h3>Other options</h3>
     <fieldset>
-			<p>
-				<input id="sshcheck" name="sshcheck" type="checkbox"  />
-				<label for="sshcheck">Use SSH (https)</label>
-			</p>
-			<p>
-				<input id="devcheck" name="devcheck" type="checkbox" />
-				<label for="devcheck">Use dev.newsblur.com</label>
-			</p>
-			
+      <p>
+        <input id="sshcheck" name="sshcheck" type="checkbox"  />
+        <label for="sshcheck">Use SSH (https)</label>
+      </p>
+      <p>
+        <input id="devcheck" name="devcheck" type="checkbox" />
+        <label for="devcheck">Use dev.newsblur.com</label>
+      </p>
+      
   </section>
 
   <footer>
@@ -57,36 +57,36 @@ addEventListener
     'DOMContentLoaded',
     function()
     {
-
+        
         // storage
         var storage = widget.preferences;
-
+        
         // glue for multiple values ( checkbox, select-multiple )
         var glue    = '\n';
-
+        
         // get the FORM elements
         var formElements = document.querySelectorAll( 'input,select' );
-
+        
         // list of FORM elements
         var skip            = hash( 'hidden,submit,image,reset,button' );
         var multipleValues  = hash( 'checkbox,select-multiple' );
         var checkable       = hash( 'checkbox,radio' );
-
-
-
+        
+        
+        
         // string to hash
         function hash( str, glue )
         {
             var obj = {};
             var tmp = str.split(glue||',');
-
+            
             while( tmp.length )
                 obj[ tmp.pop() ] = true;
-
+            
             return obj;
         }
-
-
+        
+        
         // walk the elements and apply a callback method to them
         function walkElements( callback )
         {
@@ -97,22 +97,22 @@ addEventListener
                 var type = element.type.toLowerCase();
                 var name = element.name||'';
                 if( skip[type]===true || name=='') continue;
-
+                
                 var tmp = callback( element, name, type );
                 if( tmp!=null )
                     obj.push( tmp );
             }
             return obj;
         }
-
-
+        
+        
         // listener for element changes
         function changedElement( e )
         {
             var element = e.currentTarget||e;
             var type    = element.type.toLowerCase();
             var name    = element.name||'';
-
+            
             var value   = multipleValues[type]!==true?element.value:walkElements
             (
                 function( e, n, t )
@@ -135,13 +135,13 @@ addEventListener
                     }
                 }
             ).join( glue );
-
+            
             // set value
             storage.setItem( name, value );
         }
-
-
-
+        
+        
+        
         // set the textContent of an element
         function setText( id, txt )
         {
@@ -151,16 +151,16 @@ addEventListener
                 e.textContent = txt;
             }
         }
-
-
-
-
+        
+        
+        
+        
         // populate the title, name, author, ...
         setText( 'widget-title', widget.name );
         setText( 'widget-name', widget.name );
         setText( 'widget-author', widget.author );
-
-
+        
+        
         // walk and set the elements accordingly to the storage
         walkElements
         (
@@ -168,7 +168,7 @@ addEventListener
             {
                 var value       = storage[name]!==undefined?storage.getItem( name ):element.value;
                 var valueHash   = hash( value, glue );
-
+                
                 if( element.selectedOptions )
                 {
                     // 'select' element
@@ -187,69 +187,23 @@ addEventListener
                     // any other kind of element
                     element.value = value;
                 }
-
-
+                
+                
                 // set the widget.preferences to the value of the element if it was undefined
                 // YOU MAY NOT WANT TO DO THIS
                 if( storage[name]==undefined )
                 {
                     changedElement( element );
                 }
-
+                
                 // listen to changes
                 element.addEventListener( 'change', changedElement, true );
             }
         );
-
+      
     },
     false
 );
-/*addEventListener ('DOMContentLoaded', function() {
-
-	function setText( id, txt )
-	{
-			var e = document.getElementById(id);
-			if( e )
-			{
-					e.textContent = txt;
-			}
-	}
-
-	setText( 'widget-title', widget.name );
-	setText( 'widget-name', widget.name );
-	setText( 'widget-author', widget.author );
-	
-	var time = document.getElementById( "updateTime" );
-	var ssh  = document.getElementById( "sshcheck" );
-	var dev  = document.getElementById( "devcheck" );
-
-	time.addEventListener( 'change', function() {
-		console.log("change time: " + this.value);
-		widget.preferences.setItem(updateTime, this.value);	
-	}, false );
-
-	ssh.addEventListener( 'change', function() {
-		console.log("change ssh: " + this.value);
-		widget.preferences.setItem(sshcheck, this.checked);
-	}, false );
-	
-	dev.addEventListener( 'change', function() {
-		console.log("change dev: " + this.value);
-		widget.preferences.setItem(devcheck, this.checked);
-	}, false );
-
-	if ( widget.preferences.updateTime && widget.preferences.sshcheck &&
-			widget.preferences.devcheck) {
-		
-		time.value = widget.preferences.updateTime;
-		ssh.value  = widget.preferences.sshcheck;
-		dev.value  = widget.preferences.devcheck;
-	}
-	
-}, false);
-*/
-
-
 
 </script>
 </body>
