@@ -18,7 +18,7 @@ var ICON_NO_AUTH 	= "icons/icon-32-disabled.png";
 
 var initialRun = true;
 var isAuthenticated = false;
-var useDev, useSSH, updateTime;
+var useDev, useSSL, updateTime;
 var updateCountTimer, titleUpdateTimer;
 
 var titleFailCount = 0;
@@ -59,7 +59,7 @@ function init() {
     if( e.storageArea!==widget.preferences ) return;
     var storage = widget.preferences;
     
-    if (e.key == "sshcheck") useSSH = (storage[e.key] == "on") ? true:false;
+    if (e.key == "sslcheck") useSSL = (storage[e.key] == "on") ? true:false;
     if (e.key == "devcheck") useDev = (storage[e.key] == "on") ? true:false;
     if (e.key == "updateTime") {
       if (updateTime != storage[e.key]){
@@ -75,7 +75,7 @@ function init() {
 
   // Listen to storage events, load stored values.
   addEventListener("storage", storageHandler, false);
-  useSSH 			= (widget.preferences['sshcheck'] == "on") ? true : false;
+  useSSL 			= (widget.preferences['sslcheck'] == "on") ? true : false;
   useDev 			= (widget.preferences['devcheck'] == "on") ? true : false;
   updateTime 	= widget.preferences['updateTime'];
 
@@ -162,7 +162,7 @@ function isTabFocused() {
 // Returns the URL for NewsBlur with proper prefix.
 function getURL(){
   var dprefix;
-  dprefix  = (useSSH) ? "https://" : "http://";
+  dprefix  = (useSSL) ? "https://" : "http://";
   dprefix += (useDev) ? "dev." : ""; 
   
   return dprefix + NEWSBLUR_DOMAIN;
