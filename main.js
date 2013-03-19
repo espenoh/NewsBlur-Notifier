@@ -13,7 +13,7 @@ var GET_UNREAD_UPDATE = "/reader/refresh_feeds";
 var TITLE_REGEX = /\((\d+)\)\sNewsBlur/g;
 var TITLE_UPDATE_FREQ = 1000; // We check title every second
 
-var ICON_OK 			= "icons/icon-32.png";
+var ICON_OK       = "icons/icon-32.png";
 var ICON_NO_AUTH 	= "icons/icon-32-disabled.png";
 
 var initialRun = true;
