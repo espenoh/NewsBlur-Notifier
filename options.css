@@ -63,6 +63,15 @@ fieldset label {
   margin-left: 20px;
 }
 
+fieldset label img {
+  vertical-align: middle;
+  margin-right: 10px;
+}
+
+.lmargin {
+  margin-left: 5px;
+}
+
 fieldset *:disabled {
   opacity: 0.5;
 }

@@ -17,9 +17,12 @@ var TITLE_UPDATE_FREQ = 1000; // We check title every second
 var ICON_OK       = "icons/icon-32.png";
 var ICON_NO_AUTH 	= "icons/icon-32-disabled.png";
 
+var COLOR_UNREAD  = "#D30004"; 
+var COLOR_FOCUSED = "#6EA74A";
+
 var initialRun = true;
 var isAuthenticated = false;
-var useDev, useSSL, updateTime;
+var useDev, useSSL, updateTime, styleType;
 var updateCountTimer, titleUpdateTimer;
 
 var titleFailCount = 0;
@@ -51,7 +54,7 @@ function init() {
       display: "block",
       textContent: "",
       color: "white",
-      backgroundColor: "#D30004",
+      backgroundColor: COLOR_UNREAD,
     }
   }
   
@@ -70,6 +73,12 @@ function init() {
         updateCountTimer = setInterval(getUpdateCount, updateTime);
       }
     }
+    if (e.key == "styleType") {
+      styleType = storage[e.key];
+      button.badge.backgroundColor = 
+        (styleType == "s3") ? COLOR_FOCUSED : COLOR_UNREAD;
+      updateButton();
+    }
   }
   
   button = opera.contexts.toolbar.createItem(ToolbarUIItemProperties);
@@ -80,7 +89,10 @@ function init() {
   useSSL 			= (widget.preferences['sslcheck'] == "on") ? true : false;
   useDev 			= (widget.preferences['devcheck'] == "on") ? true : false;
   updateTime 	= widget.preferences['updateTime'];
-
+  styleType   = widget.preferences['styleType'];
+  button.badge.backgroundColor = 
+    (styleType == "s3") ? COLOR_FOCUSED : COLOR_UNREAD;
+  
   // Start JSON updater.
   updateCountTimer = setInterval(getUpdateCount, updateTime);
   getUpdateCount();
@@ -165,7 +177,7 @@ function getTitleCount(){
 function isTabFocused() {
   try {
     var tab = opera.extension.tabs.getFocused();
-    if (tab.url == getURL() + NEWSBLUR_PATH)
+    if (tab.url.indexOf(getURL()) != -1)
       return tab;
   } catch (e) {}
   return false;
@@ -184,15 +196,28 @@ function getURL(){
 
 // Update the button badge with current unread count.
 function updateButton() {
-  var unreadCount = parseInt(unreadNt) + parseInt(unreadPs);
 
-  if (button.badge.textContent != unreadCount) {
-    if (unreadCount == 0) {
-      button.badge.textContent = "";
-    } else {
-      var bText = (unreadCount > 999) ? "999+" : unreadCount + "";
-      button.badge.textContent = 
-        ((bText.length <= 2) && (bText.length > 0)) ? " "+bText+" " : bText; 
+  if (styleType == "s1" || styleType == "s3") { // Total unread + only focus
+    var totCount = parseInt(unreadNt) + parseInt(unreadPs);
+    var displayCount = (styleType == "s1") ?  totCount : parseInt(unreadPs);
+    
+    if (button.badge.textContent != displayCount) {
+      if (displayCount == 0) {
+        button.badge.textContent = "";
+      } else {
+        var bText = (displayCount > 999) ? "999+" : displayCount + "";
+        button.badge.textContent = 
+          ((bText.length <= 2) && (bText.length > 0)) 
+            ? " "+bText+" " : bText; 
+      }
     }
+    
+  } else if (styleType == "s2") { // Separate counts
+    var dispNt = (parseInt(unreadNt) > 99) ? "++" : unreadNt;
+    var dispPs = (parseInt(unreadPs) > 99) ? "++" : unreadPs;
+    var displayStr = " " + dispNt + "/" + dispPs + " "; 
+    
+    button.badge.textContent = displayStr;
   }
+
 }

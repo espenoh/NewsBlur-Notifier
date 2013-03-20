@@ -7,7 +7,7 @@
 </head>
 <body>
   <header>
-    <img src="icons/icon-64.png">
+    <img src="icons/icon-64.png" alt="icon" />
     <h1 id="widget-name">Extension name v1.01</h1>
     <h2>Made by <span id="widget-author">Developer</h2>
     <a href="https://github.com/espenoh/NewsBlur-Notifier"><img style="position: absolute; top: 0; right: 0; border: 0;" src="icons/github.png" alt="Fork me on GitHub"></a>
@@ -20,7 +20,7 @@
     <h3>Timing options</h3>
     <fieldset>
       Update every:
-      <select id="updateTime" name="updateTime" multiple="false">
+      <select id="updateTime" name="updateTime">
         <option value="60000">1 minute</option>
         <option selected value="300000">5 minutes</option>
         <option value="600000">10 minutes</option>
@@ -28,18 +28,34 @@
         <option value="1800000">30 minutes</option>
       </select>
     </fieldset>
-
+    
+    <h3>Display style</h3>
+    <fieldset>
+      <p>
+        <input name="styleType" id="radio1" value="s1" type="radio" checked>
+        <label for="radio1" class="lmargin"><img src="icons/button1.png" alt="button 1" /> Show all unread grouped </label>
+      </p>
+      <p>
+        <input name="styleType" id="radio2" value="s2" type="radio">
+        <label for="radio2" class="lmargin"><img src="icons/button2.png" alt="button 2" /> Separate unread and focused </label>
+      </p>
+      <p>
+        <input name="styleType" id="radio3" value="s3" type="radio">
+        <label for="radio3" class="lmargin"><img src="icons/button3.png" alt="button 3" /> Only show focused </label>
+      </p>
+    </fieldset>
+    
     <h3>Other options</h3>
     <fieldset>
       <p>
-        <input id="sslcheck" name="sslcheck" type="checkbox"  />
+        <input id="sslcheck" name="sslcheck" type="checkbox"  >
         <label for="sslcheck">Use SSL (https)</label>
       </p>
       <p>
-        <input id="devcheck" name="devcheck" type="checkbox" />
+        <input id="devcheck" name="devcheck" type="checkbox" >
         <label for="devcheck">Use dev.newsblur.com</label>
       </p>
-      
+    </fieldset>  
   </section>
 
   <footer>
