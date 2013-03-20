@@ -10,7 +10,8 @@ var NEWSBLUR_DOMAIN   = "newsblur.com";
 var NEWSBLUR_PATH     = "/folder/everything";
 var GET_UNREAD_UPDATE = "/reader/refresh_feeds";
 
-var TITLE_REGEX = /\((\d+)\)\sNewsBlur/g;
+var TITLE_REGEX_SINGLE = /\((\d+)\)\sNewsBlur/g;
+var TITLE_REGEX_DOUBLE = /\((\d+)\/(\d+)\)\sNewsBlur/g;
 var TITLE_UPDATE_FREQ = 1000; // We check title every second
 
 var ICON_OK       = "icons/icon-32.png";
@@ -22,7 +23,8 @@ var useDev, useSSL, updateTime;
 var updateCountTimer, titleUpdateTimer;
 
 var titleFailCount = 0;
-var unreadCount = 0;
+var unreadPs = 0; // Unread counters for focused (ps) and normal (nt).
+var unreadNt = 0;
 
 function init() {
   var ToolbarUIItemProperties = {
@@ -111,15 +113,17 @@ function getUpdateCount(){
         }
         
         // Check for unread count in returned JSON.
-        var nt = 0;
+        var ps = 0, nt = 0;
         for (var key in resp.feeds) { 
-          if (resp.feeds.hasOwnProperty(key) && (resp.feeds[key].nt)) {
-            nt += resp.feeds[key].nt;
+          if (resp.feeds.hasOwnProperty(key)){
+            if (resp.feeds[key].ps) ps += resp.feeds[key].ps;
+            if (resp.feeds[key].nt) nt += resp.feeds[key].nt;
           }
         }
         
         // Update button
-        unreadCount = nt;
+        unreadPs = ps;
+        unreadNt = nt;
         updateButton();
       }
     }
@@ -132,10 +136,19 @@ function getUpdateCount(){
 function getTitleCount(){
   var tab = isTabFocused();
   if (tab) {
-    var tabcount = TITLE_REGEX.exec(tab.title);
-    if (tabcount && tabcount[1]){
-      unreadCount = tabcount[1];
+    var tabcount_single = TITLE_REGEX_SINGLE.exec(tab.title);
+    var tabcount_double = TITLE_REGEX_DOUBLE.exec(tab.title);
+    
+    if (tabcount_double && tabcount_double[1] && tabcount_double[2]){
+      unreadNt = tabcount_double[1];
+      unreadPs = tabcount_double[2];
       updateButton();
+      
+    } else if (tabcount_single && tabcount_single[1]) {
+      unreadNt = tabcount_single[1];
+      unreadPs = 0;
+      updateButton();
+      
     }
     
   } else { 
@@ -171,6 +184,8 @@ function getURL(){
 
 // Update the button badge with current unread count.
 function updateButton() {
+  var unreadCount = parseInt(unreadNt) + parseInt(unreadPs);
+
   if (button.badge.textContent != unreadCount) {
     if (unreadCount == 0) {
       button.badge.textContent = "";
