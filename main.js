@@ -15,7 +15,7 @@ var TITLE_REGEX_DOUBLE = /\((\d+)\/(\d+)\)\sNewsBlur/g;
 var TITLE_UPDATE_FREQ = 1000; // We check title every second
 
 var ICON_OK       = "icons/icon-32.png";
-var ICON_NO_AUTH 	= "icons/icon-32-disabled.png";
+var ICON_NO_AUTH  = "icons/icon-32-disabled.png";
 
 var COLOR_UNREAD  = "#D30004"; 
 var COLOR_FOCUSED = "#6EA74A";
@@ -37,17 +37,18 @@ function init() {
       var oTabs = opera.extension.tabs;
       if(!oTabs) return;
       
-      // Do nothing if we already have the correct tab
-      if(isTabFocused()) return;
+      // If current tab is not newsblur we open a new one.
+      if(!isTabFocused()) {
+        var url = getURL();
+        if (isAuthenticated) url += NEWSBLUR_PATH;
+        oTabs.create({url: url, focused: true});
+      }
       
-      var url = getURL();
-      if (isAuthenticated) url += NEWSBLUR_PATH;
-      oTabs.create({url: url, focused: true});
-      
-      // This will update the unread count from the tab itself as long as 
-      // it is focused.
+      // This will try to update the unread count from the tab itself as 
+      // long as it is focused.
       clearInterval(titleUpdateTimer);
       titleUpdateTimer = setInterval(getTitleCount, TITLE_UPDATE_FREQ);
+      
     },
     
     badge: {
@@ -86,9 +87,9 @@ function init() {
 
   // Listen to storage events, load stored values.
   addEventListener("storage", storageHandler, false);
-  useSSL 			= (widget.preferences['sslcheck'] == "on") ? true : false;
-  useDev 			= (widget.preferences['devcheck'] == "on") ? true : false;
-  updateTime 	= widget.preferences['updateTime'];
+  useSSL      = (widget.preferences['sslcheck'] == "on") ? true : false;
+  useDev      = (widget.preferences['devcheck'] == "on") ? true : false;
+  updateTime  = widget.preferences['updateTime'];
   styleType   = widget.preferences['styleType'];
   button.badge.backgroundColor = 
     (styleType == "s3") ? COLOR_FOCUSED : COLOR_UNREAD;
