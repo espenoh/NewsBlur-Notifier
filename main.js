@@ -102,46 +102,54 @@ function init() {
 
 // Fetch the unread count from the NewsBlur API using JSON.
 function getUpdateCount(){
-  var req = new XMLHttpRequest();
-  
-  req.open("GET", getURL() + GET_UNREAD_UPDATE, true);
-  req.onreadystatechange = function() {
-    if ((req.readyState == 4) && (req.status == 200)) {
-      var resp = JSON.parse(req.responseText);
-      if (resp) {
-        
-        // Auth check.
-        if (resp['authenticated'] != true) {
-          isAuthenticated = false;
-          button.icon = ICON_NO_AUTH;
-          button.title = "Not authenticated, please log in at NewsBlur.com";
-          return;
-        }
-        
-        // Change icon if auth is OK.
-        if (isAuthenticated == false) {
-          isAuthenticated = true;
-          button.icon = ICON_OK;
-          button.title = "NewsBlur Notifier";
-        }
-        
-        // Check for unread count in returned JSON.
-        var ps = 0, nt = 0;
-        for (var key in resp.feeds) { 
-          if (resp.feeds.hasOwnProperty(key)){
-            if (resp.feeds[key].ps) ps += resp.feeds[key].ps;
-            if (resp.feeds[key].nt) nt += resp.feeds[key].nt;
+  try {
+    var req = new XMLHttpRequest();
+    
+    req.open("GET", getURL() + GET_UNREAD_UPDATE, true);
+    req.onreadystatechange = function() {
+      if ((req.readyState == 4) && (req.status == 200)) {
+        var resp = JSON.parse(req.responseText);
+        if (resp) {
+          
+          // Auth check.
+          if (resp['authenticated'] != true) {
+            isAuthenticated = false;
+            button.icon = ICON_NO_AUTH;
+            button.title = "Not authenticated, please log in at NewsBlur.com";
+            return;
           }
+          
+          // Change icon if auth is OK.
+          if (isAuthenticated == false) {
+            isAuthenticated = true;
+            button.icon = ICON_OK;
+            button.title = "NewsBlur Notifier";
+          }
+          
+          // Check for unread count in returned JSON.
+          var ps = 0, nt = 0;
+          for (var key in resp.feeds) { 
+            if (resp.feeds.hasOwnProperty(key)){
+              if (resp.feeds[key].ps) ps += resp.feeds[key].ps;
+              if (resp.feeds[key].nt) nt += resp.feeds[key].nt;
+            }
+          }
+          
+          // Update button
+          unreadPs = ps;
+          unreadNt = nt;
+          updateButton();
         }
-        
-        // Update button
-        unreadPs = ps;
-        unreadNt = nt;
-        updateButton();
       }
     }
+    req.send(null);
   }
-  req.send(null);
+  catch (e) {
+    button.icon = ICON_NO_AUTH;
+    button.title = "Could not connect to NewsBlur server";
+    button.badge.textContent = " ? ";
+  }
+  
 }
 
 
