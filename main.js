@@ -1,7 +1,7 @@
 /* main.js
  * Main functionality for NewsBlur Notifier
  *
- * Written by: Espen Helgedagsrud (kleevah@zawiarr.com)
+ * Written by: Espen Helgedagsrud
  * Based on Google Reader Notifier by al007 
  *  (http://addons.opera.com/extensions/details/google-reader-notifier/)
  */
